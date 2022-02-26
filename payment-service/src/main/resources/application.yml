@@ -1,0 +1,51 @@
+saga:
+  connect-timeout-millis: 10000
+  read-timeout-millis: 60000
+  current-service:
+    name: ${SERVICE_NAME:${spring.application.name}}
+    url: http://localhost:${server.port}
+    paths:
+      payments:
+        requestPath: /saga/payment/request
+        compensationPath: /saga/payment/compensation
+  target-services:
+    delivery-service:
+      url: ${PAYMENT_SERVICE_URL:http://localhost:8083}
+      paths:
+        delivery:
+          requestPath: /saga/deliver/request
+          compensationPath: /saga/deliver/compensation
+  coordinator:
+    url: http://localhost:8888
+    connect-timeout-millis: ${SAGA_COORDINATOR_CONNECT_TIMEOUT:${saga.connect-timeout-millis}}
+    read-timeout-millis: ${SAGA_COORDINATOR_READ_TIMEOUT:${saga.read-timeout-millis}}
+
+
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 2
+    url: jdbc:postgresql://localhost:5432/payment_service
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
+    generate-ddl: true
+  application:
+    name: payment-service
+
+server:
+  port: 8082
+
+
+logging:
+  level:
+    ru.kmao.saga: DEBUG
+    com.example.saga: DEBUG
+    org.springframework.web.reactive: DEBUG
+    reactor.netty.http.client.HttpClient: DEBUG

@@ -1,0 +1,10 @@
+POST http://localhost:8080/create-order
+Content-Type: application/json
+
+{
+  "name": "order-1",
+  "price": "1255",
+  "path": "/example",
+  "validTo": 1917044687551
+}
+###

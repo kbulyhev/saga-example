@@ -1,0 +1,35 @@
+saga:
+  connect-timeout-millis: 10000
+  read-timeout-millis: 60000
+  current-service:
+    name: ${SERVICE_NAME:${spring.application.name}}
+    url: http://localhost:${server.port}
+    paths:
+      deliver:
+        requestPath: /saga/deliver/request
+        compensationPath: /saga/deliver/compensation
+  coordinator:
+    url: http://localhost:8888
+    connect-timeout-millis: ${SAGA_COORDINATOR_CONNECT_TIMEOUT:${saga.connect-timeout-millis}}
+    read-timeout-millis: ${SAGA_COORDINATOR_READ_TIMEOUT:${saga.read-timeout-millis}}
+
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 2
+    url: jdbc:postgresql://localhost:5432/deliver_service
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
+    generate-ddl: true
+  application:
+    name: deliver-service
+
+server:
+  port: 8083
